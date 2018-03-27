@@ -81,8 +81,14 @@ def setDNI(){
     device.setDeviceNetworkId("${newDNI}")
 }
 
+def getRandomInt(int min, int max) {
+		Random r = new Random();
+		return r.nextInt((max - min) + 1) + min;
+	}
+
 def sendCommand(String commandMethod, String deviceID){
-    def commandData = [ id: '1', method: commandMethod, params: [auth: settings.systemID,targetID: deviceID]]
+    def randomID = getRandomInt(20, 100)
+    def commandData = [ id: randomID, method: commandMethod, params: [auth: settings.systemID,targetID: deviceID]]
     def commandJson = groovy.json.JsonOutput.toJson(commandData)
     log.debug(commandJson)
     sendHubCommand(new physicalgraph.device.HubAction(commandJson, physicalgraph.device.Protocol.LAN, device.deviceNetworkId))

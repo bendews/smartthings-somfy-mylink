@@ -113,7 +113,7 @@ def createChildDevices() {
             }
             if (!deviceExists) {
                 log.debug("Creating Somfy Device: ${deviceID}")
-                addChildDevice("bendews", "Somfy MyLink Shade", deviceID, null, [
+                addChildDevice("bendews", "Somfy MyLink Shade", deviceID, device.hub.id, [
                         "label": "${deviceName}"
                 ])
             }

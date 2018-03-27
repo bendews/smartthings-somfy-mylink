@@ -1,6 +1,6 @@
 /**
  *  Somfy MyLink Hub
- *  V 1.0 - 17/03/2018
+ *  V 1.1 - 28/03/2018
  *
  *  Copyright 2018 Ben Dews - https://bendews.com
  *
@@ -17,6 +17,7 @@
  *	Changelog:
  *
  *  1.0 (17/03/2018) - Initial 1.0 Release. Window Shade Open and Close functions working.
+ *  1.1 (28/03/2018) - Emulated partial opening (not very accurate due to ST), and also emulated Stop and PresetPosition buttons
  *
  *
  */
@@ -81,8 +82,14 @@ def setDNI(){
     device.setDeviceNetworkId("${newDNI}")
 }
 
+def getRandomInt(int min, int max) {
+		Random r = new Random();
+		return r.nextInt((max - min) + 1) + min;
+	}
+
 def sendCommand(String commandMethod, String deviceID){
-    def commandData = [ id: '1', method: commandMethod, params: [auth: settings.systemID,targetID: deviceID]]
+    def randomID = getRandomInt(20, 100)
+    def commandData = [ id: randomID, method: commandMethod, params: [auth: settings.systemID,targetID: deviceID]]
     def commandJson = groovy.json.JsonOutput.toJson(commandData)
     log.debug(commandJson)
     sendHubCommand(new physicalgraph.device.HubAction(commandJson, physicalgraph.device.Protocol.LAN, device.deviceNetworkId))
@@ -107,7 +114,7 @@ def createChildDevices() {
             }
             if (!deviceExists) {
                 log.debug("Creating Somfy Device: ${deviceID}")
-                addChildDevice("bendews", "Somfy MyLink Shade", deviceID, null, [
+                addChildDevice("bendews", "Somfy MyLink Shade", deviceID, device.hub.id, [
                         "label": "${deviceName}"
                 ])
             }
@@ -124,6 +131,7 @@ def childClose(String deviceID) {
 }
 def childPresetPosition(String deviceID) {
     log.debug("childPresetPosition")
+    sendCommand("mylink.move.stop", deviceID)
 }
 
 def installed() {

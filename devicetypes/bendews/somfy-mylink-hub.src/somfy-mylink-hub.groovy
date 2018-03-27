@@ -130,6 +130,7 @@ def childClose(String deviceID) {
 }
 def childPresetPosition(String deviceID) {
     log.debug("childPresetPosition")
+    sendCommand("mylink.move.stop", deviceID)
 }
 
 def installed() {

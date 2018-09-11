@@ -52,6 +52,28 @@ metadata {
             input("device4ID", "string", title:"Device 4 ID", displayDuringSetup:true)
             input("device5Name", "string", title:"Device 5 Name", displayDuringSetup:true)
             input("device5ID", "string", title:"Device 5 ID", displayDuringSetup:true)
+            input("device6Name", "string", title:"Device 6 Name", displayDuringSetup:true)
+            input("device6ID", "string", title:"Device 6 ID", displayDuringSetup:true)
+            input("device7Name", "string", title:"Device 7 Name", displayDuringSetup:true)
+            input("device7ID", "string", title:"Device 7 ID", displayDuringSetup:true)
+            input("device8Name", "string", title:"Device 8 Name", displayDuringSetup:true)
+            input("device8ID", "string", title:"Device 8 ID", displayDuringSetup:true)
+            input("device9Name", "string", title:"Device 9 Name", displayDuringSetup:true)
+            input("device9ID", "string", title:"Device 9 ID", displayDuringSetup:true)
+            input("device10Name", "string", title:"Device 10 Name", displayDuringSetup:true)
+            input("device10ID", "string", title:"Device 10 ID", displayDuringSetup:true)
+            input("device11Name", "string", title:"Device 11 Name", displayDuringSetup:true)
+            input("device11ID", "string", title:"Device 11 ID", displayDuringSetup:true)
+            input("device12Name", "string", title:"Device 12 Name", displayDuringSetup:true)
+            input("device12ID", "string", title:"Device 12 ID", displayDuringSetup:true)
+            input("device13Name", "string", title:"Device 13 Name", displayDuringSetup:true)
+            input("device13ID", "string", title:"Device 13 ID", displayDuringSetup:true)
+            input("device14Name", "string", title:"Device 14 Name", displayDuringSetup:true)
+            input("device14ID", "string", title:"Device 14 ID", displayDuringSetup:true)
+            input("device15Name", "string", title:"Device 15 Name", displayDuringSetup:true)
+            input("device15ID", "string", title:"Device 15 ID", displayDuringSetup:true)
+            input("device16Name", "string", title:"Device 16 Name", displayDuringSetup:true)
+            input("device16ID", "string", title:"Device 16 ID", displayDuringSetup:true)
         }
     }
 
@@ -103,6 +125,17 @@ def createChildDevices() {
         devices[settings.device3ID] = settings.device3Name
         devices[settings.device4ID] = settings.device4Name
         devices[settings.device5ID] = settings.device5Name
+        devices[settings.device6ID] = settings.device6Name
+        devices[settings.device7ID] = settings.device7Name
+        devices[settings.device8ID] = settings.device8Name
+        devices[settings.device9ID] = settings.device9Name
+        devices[settings.device10ID] = settings.device10Name
+        devices[settings.device11ID] = settings.device11Name
+        devices[settings.device12ID] = settings.device12Name
+        devices[settings.device13ID] = settings.device13Name
+        devices[settings.device14ID] = settings.device14Name
+        devices[settings.device15ID] = settings.device15Name
+        devices[settings.device16ID] = settings.device16Name
         devices.remove(null)
 	    log.debug(devices)
         devices.each {deviceID, deviceName ->

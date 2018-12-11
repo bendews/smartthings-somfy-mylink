@@ -83,7 +83,7 @@ metadata {
 
 private timeToLevel(targetLevel){
     def currLevel = device.currentState("level")?.value.toFloat()
-    def timeToOpen = settings.timeToOpen.toFloat()
+    def timeToOpen = getTimeToOpen()
     def percTime = timeToOpen / 100
     def levelDiff = currLevel - targetLevel
     def moveTime = levelDiff > 0 ? (percTime * levelDiff) : (percTime * -levelDiff)
@@ -120,7 +120,7 @@ def off(){
 
 def open() {
     log.debug("Open")
-    Integer timeToOpen = settings.timeToOpen.toFloat().toInteger()
+    Integer timeToOpen = getTimeToOpen()
     parent.childOpen(device.deviceNetworkId)
     sendEvent(name: "windowShade", value: "opening")
     sendEvent(name: "switch", value: "on")
@@ -130,7 +130,7 @@ def open() {
 
 def close() {
     log.debug("Close")
-    Integer timeToOpen = settings.timeToOpen.toFloat().toInteger()
+    Integer timeToOpen = getTimeToOpen()
     parent.childClose(device.deviceNetworkId)
     sendEvent(name: "windowShade", value: "closing")
     sendEvent(name: "switch", value: "off")
@@ -162,6 +162,12 @@ def stop(){
     }
 }
 
+def getTimeToOpen(){
+    if (settings.timeToOpen == null){
+        return 25
+    }
+    return settings.timeToOpen.toFloat().toInteger()
+}
 
 def levelOpenClose(level) {
     log.debug("levelOpenClose (${level})")

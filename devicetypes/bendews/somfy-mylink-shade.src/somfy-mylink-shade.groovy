@@ -1,6 +1,6 @@
 /**
  *  Somfy MyLink Shade
- *  V 1.1 - 28/03/2018
+ *  V 1.2 - 08/12/2020
  *
  *  Copyright 2018 Ben Dews - https://bendews.com
  *
@@ -17,8 +17,8 @@
  *	Changelog:
  *
  *  1.0 (17/03/2018) - Initial 1.0 Release. Window Shade Open and Close functions working.
- *  1.1 (28/03/2018) - Emulated partial opening (not very accurate due to ST), and also emulated Stop and PresetPosition buttons
- *
+ *  1.1 (28/03/2018) - Emulated partial opening (not very accurate due to ST), and also emulated Stop and PresetPosition buttons.
+ *  1.2 (08/12/2020) - Updated to work on Hubitat, also added a command button to expose presetPosition.
  */
 
 metadata {
@@ -33,6 +33,7 @@ metadata {
 
         command "stop"
         command "levelOpenClose"
+        command "presetPosition"
     }
 
     simulator {
@@ -83,7 +84,7 @@ metadata {
 
 private timeToLevel(targetLevel){
     def currLevel = device.currentState("level")?.value.toFloat()
-    def timeToOpen = settings.timeToOpen.toFloat()
+    def timeToOpen = getTimeToOpen()
     def percTime = timeToOpen / 100
     def levelDiff = currLevel - targetLevel
     def moveTime = levelDiff > 0 ? (percTime * levelDiff) : (percTime * -levelDiff)
@@ -120,7 +121,7 @@ def off(){
 
 def open() {
     log.debug("Open")
-    Integer timeToOpen = settings.timeToOpen.toFloat().toInteger()
+    Integer timeToOpen = getTimeToOpen()
     parent.childOpen(device.deviceNetworkId)
     sendEvent(name: "windowShade", value: "opening")
     sendEvent(name: "switch", value: "on")
@@ -130,7 +131,7 @@ def open() {
 
 def close() {
     log.debug("Close")
-    Integer timeToOpen = settings.timeToOpen.toFloat().toInteger()
+    Integer timeToOpen = getTimeToOpen()
     parent.childClose(device.deviceNetworkId)
     sendEvent(name: "windowShade", value: "closing")
     sendEvent(name: "switch", value: "off")
@@ -162,6 +163,12 @@ def stop(){
     }
 }
 
+def getTimeToOpen(){
+    if (settings.timeToOpen == null){
+        return 25
+    }
+    return settings.timeToOpen.toFloat().toInteger()
+}
 
 def levelOpenClose(level) {
     log.debug("levelOpenClose (${level})")

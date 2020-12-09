@@ -1,6 +1,6 @@
 /**
  *  Somfy MyLink Hub
- *  V 1.1 - 28/03/2018
+ *  V 1.2 - 08/12/2020
  *
  *  Copyright 2018 Ben Dews - https://bendews.com
  *
@@ -17,9 +17,8 @@
  *	Changelog:
  *
  *  1.0 (17/03/2018) - Initial 1.0 Release. Window Shade Open and Close functions working.
- *  1.1 (28/03/2018) - Emulated partial opening (not very accurate due to ST), and also emulated Stop and PresetPosition buttons
- *
- *
+ *  1.1 (28/03/2018) - Emulated partial opening (not very accurate due to ST), and also emulated Stop and PresetPosition buttons.
+ *  1.2 (08/12/2020) - Updated to work on Hubitat.
  */
 
 metadata {
@@ -88,33 +87,31 @@ metadata {
     }
 }
 
-def getDNI(String ipAddress, String port){
-    log.debug "Generating DNI"
-    String ipHex = ipAddress.tokenize( '.' ).collect {  String.format( '%02X', it.toInteger() ) }.join()
-    String portHex = String.format( '%04X', port.toInteger() )
-    String newDNI = ipHex + ":" + portHex
-    return newDNI
-}
-
 def setDNI(){
     log.debug "Setting DNI"
     String ip = settings.ipAddress
     String port = settings.ipPort
-    String newDNI = getDNI(ip, port)
-    device.setDeviceNetworkId("${newDNI}")
+    device.setDeviceNetworkId("${settings.ipAddress}:${settings.ipPort}")
 }
 
-def getRandomInt(int min, int max) {
-		Random r = new Random();
-		return r.nextInt((max - min) + 1) + min;
-	}
-
-def sendCommand(String commandMethod, String deviceID){
-    def randomID = getRandomInt(20, 100)
-    def commandData = [ id: randomID, method: commandMethod, params: [auth: settings.systemID,targetID: deviceID]]
+// This is synchronized to enforce a delay between the sendHubCommand calls so that the myLink is
+// able to keep up with the requests. 1000ms delay is too short. 2000ms delay seems ok but might
+// be a little too fast. With webcore + smartthings this was not needed because the overall workflow
+// had something like 5000+ms delay between device calls. On hubitat the calls fire essentially in
+// parallel.
+synchronized def sendCommand(String commandMethod, String deviceID){
+    def commandData = [id: now(), method: commandMethod, params: [auth: settings.systemID, targetID: deviceID]]
     def commandJson = groovy.json.JsonOutput.toJson(commandData)
     log.debug(commandJson)
-    sendHubCommand(new physicalgraph.device.HubAction(commandJson, physicalgraph.device.Protocol.LAN, device.deviceNetworkId))
+    boolean noResponseExpected = false
+    def hubAction = new hubitat.device.HubAction(commandJson, hubitat.device.Protocol.LAN, [
+            type: hubitat.device.HubAction.Type.LAN_TYPE_RAW,
+			destinationAddress: device.deviceNetworkId,
+            ignoreResponse: noResponseExpected,
+            timeout: 1,
+		])
+    sendHubCommand(hubAction)
+    pauseExecution(2000)
 }
 
 def createChildDevices() {
@@ -147,7 +144,7 @@ def createChildDevices() {
             }
             if (!deviceExists) {
                 log.debug("Creating Somfy Device: ${deviceID}")
-                addChildDevice("bendews", "Somfy MyLink Shade", deviceID, device.hub.id, [
+                addChildDevice("bendews", "Somfy MyLink Shade", deviceID, [
                         "label": "${deviceName}"
                 ])
             }
@@ -158,10 +155,12 @@ def childOpen(String deviceID) {
     log.debug("childOpen")
     sendCommand("mylink.move.up", deviceID)
 }
+
 def childClose(String deviceID) {
     log.debug("childClose")
     sendCommand("mylink.move.down", deviceID)
 }
+
 def childPresetPosition(String deviceID) {
     log.debug("childPresetPosition")
     sendCommand("mylink.move.stop", deviceID)

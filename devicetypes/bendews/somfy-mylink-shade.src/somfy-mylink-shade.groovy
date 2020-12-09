@@ -77,7 +77,7 @@ metadata {
 
     preferences {
         section("Settings") {
-            input("timeToOpen", "string", title:"Time (in seconds) for blind to open", defaultValue: "8")
+            input("timeToOpen", "string", title:"Time (in seconds) for blind to open", defaultValue: "20")
         }
     }
 }

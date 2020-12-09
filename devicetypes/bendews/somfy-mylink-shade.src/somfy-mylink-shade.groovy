@@ -1,4 +1,5 @@
-omfy MyLink Shade
+/**
+ *  Somfy MyLink Shade
  *  V 1.2 - 08/12/2020
  *
  *  Copyright 2018 Ben Dews - https://bendews.com

@@ -105,11 +105,11 @@ synchronized def sendCommand(String commandMethod, String deviceID){
     log.debug(commandJson)
     boolean noResponseExpected = false
     def hubAction = new hubitat.device.HubAction(commandJson, hubitat.device.Protocol.LAN, [
-            type: hubitat.device.HubAction.Type.LAN_TYPE_RAW,
-			destinationAddress: device.deviceNetworkId,
-            ignoreResponse: noResponseExpected,
-            timeout: 1,
-		])
+        type: hubitat.device.HubAction.Type.LAN_TYPE_RAW,
+        destinationAddress: device.deviceNetworkId,
+        ignoreResponse: noResponseExpected,
+        timeout: 1,
+    ])
     sendHubCommand(hubAction)
     pauseExecution(2000)
 }

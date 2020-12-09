@@ -165,7 +165,7 @@ def stop(){
 
 def getTimeToOpen(){
     if (settings.timeToOpen == null){
-        return 8
+        return 25
     }
     return settings.timeToOpen.toFloat().toInteger()
 }

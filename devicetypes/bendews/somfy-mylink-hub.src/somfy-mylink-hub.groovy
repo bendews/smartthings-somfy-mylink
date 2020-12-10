@@ -95,7 +95,7 @@ def setDNI(){
 }
 
 // This is synchronized to enforce a delay between the sendHubCommand calls so that the myLink is
-// able to keep up with the requests. 1000ms delay is too short. 2000ms delay seems ok but might
+// able to keep up with the requests. 1000ms delay is too short. 5000ms delay seems ok but might
 // be a little too fast. With webcore + smartthings this was not needed because the overall workflow
 // had something like 5000+ms delay between device calls. On hubitat the calls fire essentially in
 // parallel.
@@ -111,7 +111,7 @@ synchronized def sendCommand(String commandMethod, String deviceID){
         timeout: 1,
     ])
     sendHubCommand(hubAction)
-    pauseExecution(2000)
+    pauseExecution(5000)
 }
 
 def createChildDevices() {

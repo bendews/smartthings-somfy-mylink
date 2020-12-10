@@ -1,6 +1,6 @@
 /**
  *  Somfy MyLink Shade
- *  V 1.1 - 28/03/2018
+ *  V 1.2 - 08/12/2020
  *
  *  Copyright 2018 Ben Dews - https://bendews.com
  *
@@ -17,8 +17,8 @@
  *	Changelog:
  *
  *  1.0 (17/03/2018) - Initial 1.0 Release. Window Shade Open and Close functions working.
- *  1.1 (28/03/2018) - Emulated partial opening (not very accurate due to ST), and also emulated Stop and PresetPosition buttons
- *
+ *  1.1 (28/03/2018) - Emulated partial opening (not very accurate due to ST), and also emulated Stop and PresetPosition buttons.
+ *  1.2 (08/12/2020) - Updated to work on Hubitat, also added a command button to expose presetPosition.
  */
 
 metadata {
@@ -33,6 +33,7 @@ metadata {
 
         command "stop"
         command "levelOpenClose"
+        command "presetPosition"
     }
 
     simulator {
